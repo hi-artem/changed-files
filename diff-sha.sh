@@ -74,19 +74,19 @@ function deepenShallowCloneToFindCommit() {
   local target_branch="$4"
   local depth=20
   local max_depth=$INPUT_MAX_FETCH_DEPTH
+  git fetch --no-tags -u --progress --deepen="$max_depth" origin "$target_branch":"$target_branch"
+#   while ! git diff "$base_ref$diff$ref" &>/dev/null; do
+#     echo "::debug::Unable to find merge-base in shallow clone. Increasing depth to $((depth * 2))..."
 
-  while ! git diff "$base_ref$diff$ref" &>/dev/null; do
-    echo "::debug::Unable to find merge-base in shallow clone. Increasing depth to $((depth * 2))..."
+#     depth=$((depth * 2))
 
-    depth=$((depth * 2))
+#     if [[ $depth -gt $max_depth ]]; then
+#       echo "::error::Unable to find merge-base in shallow clone. Please increase 'max_fetch_depth' to at least $((depth + 20))."
+#       exit 1
+#     fi
 
-    if [[ $depth -gt $max_depth ]]; then
-      echo "::error::Unable to find merge-base in shallow clone. Please increase 'max_fetch_depth' to at least $((depth + 20))."
-      exit 1
-    fi
-
-    git fetch --no-tags -u --progress --deepen="$depth" origin "$target_branch":"$target_branch"
-  done
+#     git fetch --no-tags -u --progress --deepen="$depth" origin "$target_branch":"$target_branch"
+#   done
 }
 
 if [[ -z $GITHUB_BASE_REF ]]; then
